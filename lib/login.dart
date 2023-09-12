@@ -1,9 +1,13 @@
 import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:evnav/firestore/readUserData.dart';
+import 'package:evnav/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'registration.dart';
 import 'home.dart';
+import 'package:evnav/testing/firebaseText.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +17,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  Stream collectionStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+  Stream documentStream =
+      FirebaseFirestore.instance.collection('users').doc().snapshots();
+  final Stream<QuerySnapshot> _userStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  int count = 0;
+
   bool isRememberMe = false;
 
   Widget buildEmail() {
@@ -39,7 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         offset: Offset(0, 2))
                   ]),
               height: 60,
-              child: const TextField(
+              child: TextField(
+                  controller: email,
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(color: Colors.black87),
                   decoration: InputDecoration(
@@ -78,7 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         offset: Offset(0, 2))
                   ]),
               height: 60,
-              child: const TextField(
+              child: TextField(
+                  controller: password,
                   obscureText: true,
                   style: TextStyle(color: Colors.black87),
                   decoration: InputDecoration(
@@ -134,6 +152,30 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
+  Widget returnUser() {
+    return StreamBuilder(
+        stream: _userStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text("Loading");
+          }
+
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
+              return ListTile(
+                title: Text(data['first_name']),
+                subtitle: Text(data['second_name']),
+              );
+            }).toList(),
+          );
+        });
+  }
+
   Widget buildLoginBtn() {
     return Container(
         padding: const EdgeInsets.symmetric(vertical: 25),
@@ -144,8 +186,60 @@ class _LoginScreenState extends State<LoginScreen> {
 
           //elevation: 5,
 
-          onPressed: () => Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomeScreen())),
+          onPressed: () => {
+            //ReadUserData("shashank@gmail.com"),
+            //count = 0,
+            FirebaseFirestore.instance
+                .collection('users')
+                .get()
+                .then((QuerySnapshot querySnapshot) {
+              for (var doc in querySnapshot.docs) {
+                if (doc['email'] == email.text &&
+                    doc['password'] == password.text) {
+                  print("******************************");
+                  print("Email: " + doc['email']);
+                  print("******************************");
+                  //print(doc['email']);
+                  //print(doc['password']);
+                  count = count + 1;
+                }
+                if (count == 1) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Provider()));
+                  break;
+                }
+              }
+              if (count == 0) {
+                print(count);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Incorrect credentials'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text('Invalid Credentials'),
+                              Text('Enter correct credentials'),
+                              TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'cancel'),
+                                  child: Text("Cancel"))
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              } else {
+                count = 0;
+              }
+            }),
+            print("------Before if condidion count = $count"),
+            //Navigator.push(context,
+            //    MaterialPageRoute(builder: (context) => UserInformation())),
+          },
           // padding:
           //style: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
           child: const Text(

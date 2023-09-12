@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "230644165555",
+    "firebase_url": "https://final-evnav-default-rtdb.firebaseio.com",
+    "project_id": "final-evnav",
+    "storage_bucket": "final-evnav.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230644165555:android:49024a184769f1b37d39c6",
+        "android_client_info": {
+          "package_name": "com.example.evnav"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "230644165555-g353rmoefgufvjsohhccp43n0tjq4nds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZeGtD-y0OsyKshcFkz5km24kNEU-CszY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "230644165555-g353rmoefgufvjsohhccp43n0tjq4nds.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "230644165555-ovnbci6v1rfcagefrnidnea1egk4m824.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.evnav"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

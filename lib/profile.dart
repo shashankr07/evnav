@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MaterialApp(
-      home: card(),
-    ));
-
-class card extends StatelessWidget {
-  const card({Key? key}) : super(key: key);
+class Card extends StatelessWidget {
+  final String name;
+  final String rating;
+  const Card({Key? key, required this.name, required this.rating})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +36,8 @@ class card extends StatelessWidget {
                     )),
               ),
               const SizedBox(height: 10.0),
-              const Center(
-                child: Text('Pratik Shinde',
+              Center(
+                child: Text(name,
                     style: TextStyle(
                       color: Colors.white,
                       letterSpacing: 2.0,
@@ -47,8 +46,8 @@ class card extends StatelessWidget {
                     )),
               ),
               const SizedBox(height: 40.0),
-              const Center(
-                child: Text('Rating',
+              Center(
+                child: Text(rating,
                     style: TextStyle(
                       color: Colors.white,
                       letterSpacing: 2.0,
